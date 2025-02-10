@@ -5,6 +5,13 @@ MONITOR_PID_FILE="/tmp/${MONITOR_NAME}.pid"
 
 write_csv() {
   TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+  CURRENT_DATE=$(date +"%Y-%m-%d")
+  CSV_FILE="disk_usage_${CURRENT_DATE}.csv"
+
+  if [ ! -f "$CSV_FILE" ]; then
+    echo "Timestamp,Disk_Usage,Inode_Usage" > "$CSV_FILE"
+  fi
+
   DISK_USAGE=$(df / | tail -1 | awk '{print $5}')
   INODE_USAGE=$(df -i / | tail -1 | awk '{print $5}')
   echo "$TIMESTAMP,$DISK_USAGE,$INODE_USAGE" >> "$CSV_FILE"
@@ -29,10 +36,7 @@ start_monitoring() {
     echo "Monitoring is already running with PID $(cat "$MONITOR_PID_FILE")"
     exit 1
   fi
-  
-  TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-  CSV_FILE="disk_usage_${TIMESTAMP}_$(date +"%Y-%m-%d").csv"
-  
+
   monitor_disk_usage &
   PID=$!
   echo "$PID" > "$MONITOR_PID_FILE"
@@ -44,7 +48,7 @@ stop_monitoring() {
     echo "Monitoring is not running."
     exit 1
   fi
-  
+
   PID=$(cat "$MONITOR_PID_FILE")
   kill "$PID" && rm -f "$MONITOR_PID_FILE"
   echo "Monitoring stopped."
