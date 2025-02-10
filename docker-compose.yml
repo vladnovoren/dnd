@@ -1,0 +1,14 @@
+version: '3'
+services:
+  ansible:
+    build: .
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./ansible:/ansible2
+    command: ansible-playbook -i inventories/servers.yml playbooks/app_deploy.yml
+  flask-app:
+    build: /opt/app
+    ports:
+      - "5000:5000"
+    restart: always
+

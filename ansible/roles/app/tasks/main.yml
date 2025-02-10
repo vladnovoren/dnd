@@ -1,0 +1,12 @@
+---
+- name: Clone Flask app repository
+  git:
+    repo: 'https://github.com/eletenkov/python3-flask-docker.git'
+    dest: /opt/app/
+    version: main
+
+- name: Build and run Flask app with Docker
+  shell: |
+    cd /opt/app
+    docker build -t flask-app .
+    docker run -d -p 5000:5000 --name flask-app-container flask-app
