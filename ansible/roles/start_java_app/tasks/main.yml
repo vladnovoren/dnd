@@ -1,0 +1,5 @@
+- name: Start the Java application with logging
+  shell: "nohup java -jar /opt/java-app/java-app.jar &"
+  environment:
+    JAVA_HOME: "/usr/local/openjdk-21"
+    PATH: "/usr/local/openjdk-21/bin:{{ ansible_env.PATH }}"

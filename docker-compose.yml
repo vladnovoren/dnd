@@ -1,14 +1,34 @@
-version: '3'
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+
 services:
+  debian-work:
+    container_name: debian-work
+    build:
+      context: .
+      dockerfile: Dockerfile.debian
+    volumes:
+      - ./nginx_logs:/var/log/nginx
+    ports:
+      - 80:80
+    networks:
+      custom_network:
+        ipv4_address: 172.18.0.2
+
   ansible:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.ansible
+    container_name: ansible
+    command: ["ansible-playbook", "-i", "/ansible/hosts", "/ansible/playbook.yml"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./ansible:/ansible2
-    command: ansible-playbook -i inventories/servers.yml playbooks/app_deploy.yml
-  flask-app:
-    build: /opt/app
-    ports:
-      - "5000:5000"
-    restart: always
-
+    depends_on:
+      - debian-work
+    networks:
+      custom_network:
+        ipv4_address: 172.18.0.3

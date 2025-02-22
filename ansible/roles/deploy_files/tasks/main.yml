@@ -1,0 +1,41 @@
+---
+- name: Copy java-app.conf to nginx configuration directory
+  copy:
+    src: /ansible/java-app.conf
+    dest: /etc/nginx/sites-available/java-app.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Test nginx configuration
+  command: nginx -t
+  failed_when: false
+  register: nginx_test
+
+- name: Enable the java-app site for nginx
+  file:
+    src: /etc/nginx/sites-available/java-app.conf
+    dest: /etc/nginx/sites-enabled/java-app.conf
+    state: link
+  when: nginx_test.rc == 0
+
+- name: Restart nginx to apply new configuration
+  service:
+    name: nginx
+    state: restarted
+
+- name: Ensure the target directory /opt/java-app exists
+  file:
+    path: /opt/java-app
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Copy the java-app.jar to the remote host
+  copy:
+    src: /ansible/hello-world-1.0.2-SNAPSHOT.jar
+    dest: /opt/java-app/java-app.jar
+    owner: root
+    group: root
+    mode: '0755'
