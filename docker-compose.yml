@@ -1,0 +1,39 @@
+networks:
+  custom_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16
+
+services:
+  debian-db-work:
+    container_name: debian-db-work
+    build:
+      context: .
+      dockerfile: Dockerfile.debian
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/$DB_NAME
+      SPRING_DATASOURCE_USERNAME: $DB_USERNAME
+      SPRING_DATASOURCE_PASSWORD: $DB_PASSWORD
+    ports:
+      - 80:8080
+    networks:
+      custom_network:
+        ipv4_address: 172.19.0.2
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      custom_network:
+        ipv4_address: 172.19.0.3
