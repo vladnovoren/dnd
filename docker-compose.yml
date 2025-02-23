@@ -8,9 +8,7 @@ networks:
 services:
   debian-db-work:
     container_name: debian-db-work
-    build:
-      context: .
-      dockerfile: Dockerfile.debian
+    image: vladnovoren/debian-db-work
     depends_on:
       - postgres
     environment:
