@@ -12,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'lab4', url: 'https://github.com/vladnovoren/dnd.git'
+                git credentialsId: 'github-token', branch: 'lab4', url: 'https://github.com/vladnovoren/dnd.git'
             }
         }
 
