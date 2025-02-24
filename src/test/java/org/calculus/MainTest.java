@@ -12,6 +12,7 @@ public class MainTest {
     @Test
     public void testMain() {
         String input = "0\n3\n1000\n";
+
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
