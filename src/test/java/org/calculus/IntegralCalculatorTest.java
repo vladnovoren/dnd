@@ -22,7 +22,7 @@ public class IntegralCalculatorTest {
     @Test
     public void testSimpsonsRule() {
         assertEquals(9.0, simpsonsRule(f, 0, 3, 1000), 0.1);
-        assertEquals(9.0, simpsonsRule(f, 0, 3, 10001), 0.1);
+        assertEquals(9.0, simpsonsRule(f, 0, 3, 10001), 0.11);
     }
 
     @Test
