@@ -30,3 +30,4 @@ public class IntegralCalculatorTest {
         assertEquals(9.0, monteCarloMethod(f, 0, 3, 10000), 0.5);
     }
 }
+
